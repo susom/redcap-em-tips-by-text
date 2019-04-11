@@ -1,7 +1,7 @@
 {
   "name": "Tips By Text",
   "namespace": "Stanford\\TipsByText",
-  "description": "Monica de la Cruz project",
+  "description": "Tips by Text EM to send out daily tips in English or Spanish",
   "authors": [
     {
       "name": "Jae Lee",
