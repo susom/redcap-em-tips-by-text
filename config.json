@@ -1,0 +1,118 @@
+{
+  "name": "Tips By Text",
+  "namespace": "Stanford\\TipsByText",
+  "description": "Monica de la Cruz project",
+  "authors": [
+    {
+      "name": "Jae Lee",
+      "email": "jael@stanford.edu",
+      "institution": "Stanford University"
+    }
+  ],
+  "permissions": [
+    ""
+  ],
+  "links": {
+    "project": [
+      {
+        "name": "TipsByText: Test Cron Links",
+        "icon": "gear",
+        "url": "src/DisplayCronLinks.php"
+      },
+      {
+        "name": "TipsByText: Display All Tips",
+        "icon": "gear",
+        "url": "src/DisplayAllTips.php"
+      },
+      {
+        "name": "TipsByText: Send Test Text Tip",
+        "icon": "gear",
+        "url": "src/SendTestTextTip.php"
+      }
+    ]
+  },
+  "no-auth-pages": [
+    "src/HandleTextReceipt",
+    "src/TipsByTextCron"
+  ],
+  "crons": [
+    {
+      "cron_name": "em_tips_by_text_cron",
+      "cron_description": "Cron to send tips  by text",
+      "method": "sendCronTips",
+      "cron_frequency": "3600",
+      "cron_max_run_time": "1200"
+    }
+  ],
+  "system-settings": [
+    {
+      "key": "enable-system-debug-logging",
+      "name": "<b>Enable Debug Logging (system-wide)</b> <i>(Requires emLogger)</i>",
+      "required": false,
+      "type": "checkbox"
+    }
+  ],
+  "project-settings": [
+    {
+      "key": "enable-tips",
+      "name": "<b>Enable Texting of Tips </b><br>Enable the sending of tips on valid days.",
+      "required": false,
+      "type": "checkbox"
+    },
+    {
+      "key": "send-time",
+      "name": "<b>Send Time</b><br>Hour of the day (0-24) to send tips (e.g. 18 for 6PM)",
+      "required": false,
+      "type": "number"
+    },
+    {
+      "key": "sms-field-event",
+      "name": "Event where sms config fields are located",
+      "required": true,
+      "type": "event-list"
+    },
+    {
+      "key": "sms-phone",
+      "name": "Phone number field",
+      "required": true,
+      "type": "field-list"
+    },
+    {
+      "key": "sms-start-date",
+      "name": "Start Date field",
+      "required": true,
+      "type": "field-list"
+    },
+    {
+      "key": "sms-lang-field",
+      "name": "Preferred Language field",
+      "required": true,
+      "type": "field-list"
+    },
+    {
+      "key": "sms-last-day-sent-field",
+      "name": "<b>Last day sent field</b><br>Field to record the last day # sent",
+      "required": true,
+      "type": "field-list"
+    },
+    {
+      "key": "sms-input-file",
+      "name": "Update SMS file",
+      "required": false,
+      "type": "file",
+      "repeatable": false
+    },
+    {
+      "key": "sms-do-not-send-field",
+      "name": "<b>Do not send field field</b><br>If field value is greater than 0, the text will not be sent to this participant",
+      "required": true,
+      "type": "field-list"
+    },
+    {
+      "key": "enable-project-debug-logging",
+      "name": "<b>Enable Debug Logging</b> <i>(Requires emLogger)</i>",
+      "required": false,
+      "type": "checkbox"
+    }
+  ]
+}
