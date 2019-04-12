@@ -97,7 +97,7 @@
     },
     {
       "key": "sms-input-file",
-      "name": "Update SMS file",
+      "name": "Daily Tips file<br><div class='alert alert-warning'>The file must be in csv format.</div>",
       "required": false,
       "type": "file",
       "repeatable": false

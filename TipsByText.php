@@ -83,7 +83,7 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
 
             $resp = http_get($this_url);
             //$this->cronAttendanceReport($pid);
-            $this->emDebug($resp, "DEBUG", "cron for tips by text");
+            //$this->emDebug($resp, "DEBUG", "cron for tips by text");
 
         }
     }
