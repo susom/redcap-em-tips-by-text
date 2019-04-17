@@ -3,11 +3,11 @@
 namespace Stanford\TipsByText;
 /** @var \Stanford\TipsByText\TipsByText $module */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+//require_once __DIR__ . '/../vendor/autoload.php';
 
 use Plugin;
 use REDCap;
-use BenMorel\GsmCharsetConverter\Converter;
+//use BenMorel\GsmCharsetConverter\Converter;
 
 
 
@@ -30,42 +30,34 @@ if (!empty($_POST['action'])) {
             $day_text = $sm->getSmsForDay($tip_number, $language);
 
             if ('esp'== $language) {
-                $converter = new Converter();
+                //wiat for php 7.1
+                //$converter = new Converter();
                 if ('gsm' == $encoding) {
                     //$day_text = $module->convertToGSM(current($day_text));
-                    $day_text = $converter->convertUtf8ToGsm(current($day_text), false, '?'); // Hell?
+                    //$day_text = $converter->convertUtf8ToGsm(current($day_text), false, '?'); // Hell?
+                    $day_text = $module->convertUtf8ToGsm(current($day_text), false, '?'); // Hell?
                     $module->emDebug("CONVERTED TO GSM: ", $day_text);
                 }
                 if ('gsm0338' == $encoding) {
 
 
-                    $day_text = $converter->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
+                    //$day_text = $converter->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
+                    $day_text = $module->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
                     $module->emDebug($day_text);
                     }
                 if ('gsm_cleanup' == $encoding) {
                     //$day_text = $module->convertToGSM(current($day_text));
-                    $day_text = $converter->cleanUpUtf8String(current($day_text), false, '?'); // Hell?
+                    //$day_text = $converter->cleanUpUtf8String(current($day_text), false, '?'); // Hell?
+                    $day_text = $module->cleanUpUtf8String(current($day_text), false, '?'); // Hell?
                     $module->emDebug("CONVERTED TO GSM: ", $day_text);
                 }
                 if ('gsm0338_cleanup' == $encoding) {
 
 
-                    $day_text = $converter->cleanUpUtf8String(current($day_text), true, '?'); // Hello
+                    //$day_text = $converter->cleanUpUtf8String(current($day_text), true, '?'); // Hello
+                    $day_text = $module->cleanUpUtf8String(current($day_text), true, '?'); // Hello
                     $module->emDebug($day_text);
 
-
-
-                    //check matches
-//                    $foo = $module->checkNonGSM(current($day_text));
-//
-//
-//                    $day_text = mb_convert_encoding($day_text,'utf8','gsm');
-//                    $day_text = mb_convert_encoding($day_text,'utf8','UTF-16LE');
-//                    $module->emDebug("CONVERTED TO GSM 0338: ", $day_text); exit;
-//                    echo iconv("UTF-8", "ISO-8859-1", $day_text); exit;
-//                    $day_text = iconv("UTF-8", "ISO-8859-1", $day_text);
-//                    ///$day_text = $module->utf8_to_gsm0338(current($day_text));
-//                    $module->emDebug("CONVERTED TO GSM 0338: ", $day_text);
                 }
             }
 
