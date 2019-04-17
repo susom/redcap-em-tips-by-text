@@ -1,0 +1,58 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "fed93ed6970aac8851a5b710178d9791",
+    "packages": [
+        {
+            "name": "benmorel/gsm-charset-converter",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BenMorel/GsmCharsetConverter.git",
+                "reference": "efa7beeb2158fd9d8b78a1e084a1a4a501fbd5b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BenMorel/GsmCharsetConverter/zipball/efa7beeb2158fd9d8b78a1e084a1a4a501fbd5b6",
+                "reference": "efa7beeb2158fd9d8b78a1e084a1a4a501fbd5b6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "2.*",
+                "phpunit/phpunit": "7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BenMorel\\GsmCharsetConverter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Converts GSM 03.38 strings to and from UTF-8",
+            "keywords": [
+                "GSM 03.38",
+                "gsm",
+                "sms"
+            ],
+            "time": "2018-11-23T13:19:01+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

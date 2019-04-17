@@ -3,8 +3,13 @@
 namespace Stanford\TipsByText;
 /** @var \Stanford\TipsByText\TipsByText $module */
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 use Plugin;
 use REDCap;
+use BenMorel\GsmCharsetConverter\Converter;
+
+
 
 include_once "SmsMessages.php";
 
@@ -15,11 +20,55 @@ if (!empty($_POST['action'])) {
         case "send":
             $phone = $_POST["phone"];
             $language = $_POST["language"];
+            $encoding = $_POST["encoding"];
             $tip_number = $_POST["tip_number"];
 
+            $module->emDebug("lang: ". $language);
+            $module->emDebug("encoding: ". $encoding);
             $sm = new SmsMessages;
 
             $day_text = $sm->getSmsForDay($tip_number, $language);
+
+            if ('esp'== $language) {
+                $converter = new Converter();
+                if ('gsm' == $encoding) {
+                    //$day_text = $module->convertToGSM(current($day_text));
+                    $day_text = $converter->convertUtf8ToGsm(current($day_text), false, '?'); // Hell?
+                    $module->emDebug("CONVERTED TO GSM: ", $day_text);
+                }
+                if ('gsm0338' == $encoding) {
+
+
+                    $day_text = $converter->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
+                    $module->emDebug($day_text);
+                    }
+                if ('gsm_cleanup' == $encoding) {
+                    //$day_text = $module->convertToGSM(current($day_text));
+                    $day_text = $converter->cleanUpUtf8String(current($day_text), false, '?'); // Hell?
+                    $module->emDebug("CONVERTED TO GSM: ", $day_text);
+                }
+                if ('gsm0338_cleanup' == $encoding) {
+
+
+                    $day_text = $converter->cleanUpUtf8String(current($day_text), true, '?'); // Hello
+                    $module->emDebug($day_text);
+
+
+
+                    //check matches
+//                    $foo = $module->checkNonGSM(current($day_text));
+//
+//
+//                    $day_text = mb_convert_encoding($day_text,'utf8','gsm');
+//                    $day_text = mb_convert_encoding($day_text,'utf8','UTF-16LE');
+//                    $module->emDebug("CONVERTED TO GSM 0338: ", $day_text); exit;
+//                    echo iconv("UTF-8", "ISO-8859-1", $day_text); exit;
+//                    $day_text = iconv("UTF-8", "ISO-8859-1", $day_text);
+//                    ///$day_text = $module->utf8_to_gsm0338(current($day_text));
+//                    $module->emDebug("CONVERTED TO GSM 0338: ", $day_text);
+                }
+            }
+
             $status = $module->emText($phone, $day_text);
 
             if ($status === true) {
@@ -77,10 +126,30 @@ if (!empty($_POST['action'])) {
           <label for="usr">Tip Number:</label>
           <input type="text" class="form-control" id="usr" name="tip_number">
       </div>
-      <div class="form-group">
-          <label for="usr">Language (esp / eng):</label>
-          <input type="text" class="form-control" id="usr" name="language">
-      </div>
+    <div class="form-group">
+        <label for="sel1">Select language:</label>
+        <select class="form-control" id="lang">
+            <option value="esp">Send text in Spanish</option>
+            <option value="eng">Send text in English</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="sel1">Substitute special characters?:</label>
+        <div class="jumbotron">
+            <p>Nowadays, most online SMS gateways accept UTF-8 as input; however, some of them do not provide a way to force a message to be sent in the GSM charset.</p>
+
+            <p>As a result, you may end up with extra charges caused by your SMS being sent in Unicode (UCS-2) format, causing the segmentation of messages in multiple parts, just because your SMS message contains an unforeseen accented character or emoji.</p>
+
+            <p>The options with CLEANUP sends a UTF-8 string that contains only characters that can be safely converted to the GSM charset.</p>
+        </div>
+        <select class="form-control" id="encoding">
+            <option value="none">No substitution</option>
+            <option value="gsm">Convert to GSM encoding (without transliteration)</option>
+            <option value="gsm0338">Convert to GSM 03.38 encoding (with transliteration)</option>
+            <option value="gsm_cleanup">Convert to GSM encoding with CLEANUP (without transliteration)</option>
+            <option value="gsm0338_cleanup">Convert to GSM 03.38 encoding with CLEANUP (with transliteration)</option>
+        </select>
+    </div>
 
 
       <button class="btn btn-primary" name="submit" onclick="submit()">SEND TEXT</button>
@@ -96,13 +165,16 @@ if (!empty($_POST['action'])) {
 
         var saveBtn = $('button[name="submit"]');
         var phone = $('input[name="phone_number"]');
-        var language = $('input[name="language"]');
+        //var language = $('input[name="language"]');
+        var language = $('#lang');
+        var encoding = $('#encoding');
         var tip_number = $('input[name="tip_number"]');
 
         var data = {
             "action"     : "send",
             "phone"      : phone.val(),
             "language"   : language.val(),
+            "encoding"   : encoding.val(),
             "tip_number" : tip_number.val()
         };
         $.ajax({

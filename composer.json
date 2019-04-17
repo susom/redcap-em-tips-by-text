@@ -1,0 +1,5 @@
+{
+    "require": {
+        "benmorel/gsm-charset-converter": "^0.1.0"
+    }
+}

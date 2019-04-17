@@ -144,9 +144,10 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
 	 * @param string $string
 	 * @return string
 	 */
-	public static function utf8_to_gsm0338($string)
+	public function utf8_to_gsm0338($string)
 	{
-		$dict = array(
+
+        $dict = array(
 			'@' => "\x00", '£' => "\x01", '$' => "\x02", '¥' => "\x03", 'è' => "\x04", 'é' => "\x05", 'ù' => "\x06", 'ì' => "\x07", 'ò' => "\x08", 'Ç' => "\x09", 'Ø' => "\x0B", 'ø' => "\x0C", 'Å' => "\x0E", 'å' => "\x0F",
 			'Δ' => "\x10", '_' => "\x11", 'Φ' => "\x12", 'Γ' => "\x13", 'Λ' => "\x14", 'Ω' => "\x15", 'Π' => "\x16", 'Ψ' => "\x17", 'Σ' => "\x18", 'Θ' => "\x19", 'Ξ' => "\x1A", 'Æ' => "\x1C", 'æ' => "\x1D", 'ß' => "\x1E", 'É' => "\x1F",
 			// all \x2? removed
@@ -157,13 +158,15 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
 			'ä' => "\x7B", 'ö' => "\x7C", 'ñ' => "\x7D", 'ü' => "\x7E", 'à' => "\x7F",
 			'^' => "\x1B\x14", '{' => "\x1B\x28", '}' => "\x1B\x29", '\\' => "\x1B\x2F", '[' => "\x1B\x3C", '~' => "\x1B\x3D", ']' => "\x1B\x3E", '|' => "\x1B\x40", '€' => "\x1B\x65"
 		);
+		$converted = strtr($string, $dict);
 
-		$dict2 = array('ñ' => '\x7D','¿' => '\x60' );
-		$converted = strtr($string, $dict2);
 
 		// Replace unconverted UTF-8 chars from codepages U+0080-U+07FF, U+0080-U+FFFF and U+010000-U+10FFFF with a single ?
-		//return preg_replace('/([\\xC0-\\xDF].)|([\\xE0-\\xEF]..)|([\\xF0-\\xFF]...)/m','?',$converted);
-        return $converted;
+		$replaced =  preg_replace('/([\\xC0-\\xDF].)|([\\xE0-\\xEF]..)|([\\xF0-\\xFF]...)/m','?',$converted);
+        $this->emDebug($string, $converted, $replaced);  exit;
+
+        return $replaced;
+
 	}
 
 	/**
@@ -184,7 +187,7 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
 
 
     function convertToGSM( $utf8_string ) {
-    /**
+
     //global $characterMap;
     $characterMap = array(
         'Á' => '&Aacute;',   //	&#193;	Capital A-acute
@@ -207,7 +210,7 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
         '¡' => '&iexcl;',     //	&#161;	Inverted exclamation point
         '€' => '&#128;'       //	        Euro
     );
-     */
+
 
         //these characters in Monica's file are different then the previous set
         $characterMap2 = array(
@@ -230,20 +233,20 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
 
         //these characters in Monica's file are different then the previous set
         $characterMap3 = array(
-            '/Á/' => '&Aacute;',   //	&#193;	Capital A-acute
-            '/á/' => '&aacute;',    //	&#225;	Lowercase a-acute
-            '/É/' => '&Eacute;',    //	&#201;	Capital E-acute
-            '/é/' => '&eacute;',    //	&#233;	Lowercase e-acute
-            '/Í/' => '&Iacute;',    //	&#205;	Capital I-acute
-            '/í/' => '&Iacute;',    //	&#237;	Lowercase i-acute
-            '/Ñ/' => '&Ntilde;',    //	&#209;	Capital N-tilde
-            '/ñ/' => '&ntilde;',    //	&#241;	Lowercase n-tilde
-            '/Ó/' => '&Oacute;',    //	&#211;	Capital O-acute
-            '/ó/' => '&oacute;',    //	&#243;	Lowercase o-acute
-            '/Ú/' => '&Uacute;',    //	&#218;	Capital U-acute
-            '/ú/' => '&uacute;',    //	&#250;	Lowercase u-acute
-            '/¡/' => '&iexcl;',     //	&#161;	Inverted exclamation point
-            '/¿/' => '&iquest;'     //	&#191;	Inverted question mark
+            "/Á/" => "&Aacute;",   //	&#193;	Capital A-acute
+            "/á/" => "&aacute;",    //	&#225;	Lowercase a-acute
+            "/É/" => "&Eacute;",    //	&#201;	Capital E-acute
+            "/é/" => "&eacute;",    //	&#233;	Lowercase e-acute
+            "/Í/" => "&Iacute;",    //	&#205;	Capital I-acute
+            "/í/" => "&Iacute;",    //	&#237;	Lowercase i-acute
+            "/Ñ/" => "&Ntilde;",    //	&#209;	Capital N-tilde
+            "/ñ/" => "&ntilde;",    //	&#241;	Lowercase n-tilde
+            "/Ó/" => "&Oacute;",    //	&#211;	Capital O-acute
+            "/ó/" => "&oacute;",    //	&#243;	Lowercase o-acute
+            "/Ú/" => "&Uacute;",    //	&#218;	Capital U-acute
+            "/ú/" => "&uacute;",    //	&#250;	Lowercase u-acute
+            "/¡/" => "&iexcl;",     //	&#161;	Inverted exclamation point
+            "/¿/" => "&iquest;"     //	&#191;	Inverted question mark
         );
 
         $patterns        = array_keys($characterMap2);
@@ -251,7 +254,7 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
         $convertedString = preg_replace($patterns, $replacements, $utf8_string);
     //$this->emDebug($patterns, "patterns");
     //$this->emDebug($replacements, "replacements");
-    //$this->emDebug($convertedString, "converted string");
+    $this->emDebug($convertedString, "converted string");
 
         return $convertedString;
     }
@@ -337,6 +340,29 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
         $first_key = key($records);
         return ($first_key);
     }
+
+
+    function checkNonGSM($str) {
+        $this->emDebug("CHECKING ". $str);
+
+
+        $re = '/[^A-Za-z0-9 \\\\r\\\\n@£$¥èéùìòÇØøÅå\\\\u0394_\\\\u03A6\\\\u0393\\\\u039B\\\\u03A9\\\\u03A0\\\\u03A8\\\\u03A3\\\\u0398\\\\u039EÆæßÉ!\"#$%&amp;\'()*+,.\/:;&lt;=&gt;?¡ÄÖÑÜ§¿äöñüà^{}\\\\\\\\\\\\[~\\\\]|\\\\u20AC]*/m';
+        $re = '/[^A-Za-z0-9 \\\\r\\\\n@£$¥èéùìòÇØøÅåEÆæßÉ!\"#$%&amp;\'()*+,.\/:;&lt;=&gt;?¡ÄÖÑÜ§¿äöñüà^{}\\\\[~\\\\]]*/m';
+
+$str = 'EL DR. DICE: Mientras baña a su hijo, hágale preguntas sobre las partes de su cuerpo. ¿Dónde están los codos? ¿Qué hacen?';
+
+$re = '/[^A-Za-z0-9 \\\\r\\\\n@£$¥èéùìòÇØøÅåEÆæßÉ!\"#$%&amp;\'()*+,.\/:;&lt;=&gt;?¡ÄÖÑÜ§¿äöñüà^{}\\\\[~\\\\]]*/';
+$str = 'EL DR. DICE: Mientras baña a su hijo, hágale preguntas sobre las partes de su cuerpo. ¿Dónde están los codos? ¿Qué hacen?';
+        $matches = array();
+        preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+        $this->emDebug("MATCHES!! ", $matches);
+// Print the entire match result
+//var_dump($matches);
+return $matches;
+    }
+
+
+
 
 
   /*******************************************************************************************************************/
