@@ -517,7 +517,8 @@ return $matches;
     }
 
 
-    public function convertTBT($string) {
+    public function convertTBT($string)
+    {
         $dictionary = Charset::TBT_TO_GSM;
         $this->emDebug($dictionary);
         $chars = $this->splitUtf8String($string);
@@ -537,8 +538,8 @@ return $matches;
 
         //$result = $this->convertGsmToUtf8($result);
         return $result;
-
     }
+
     /**
      * Converts a UTF-8 string to GSM 03.38.
      *
@@ -560,13 +561,12 @@ return $matches;
      */
     public function convertUtf8ToGsm(string $string, bool $translit, string $replaceChars = null) : string
     {
-
+        global $module;
         if (empty($this->utf8ToGsm)) {
             $this->loadCharSet();
         }
 
         $dictionary = $translit ? $this->utf8ToGsmWithTranslit : $this->utf8ToGsm;
-        $this->emDebug($dictionary, $replaceChars);
 
         // Convert the replacement string to GSM 03.38
         if ($replaceChars !== null) {
@@ -575,7 +575,6 @@ return $matches;
 
             foreach ($chars as $char) {
                 if (! isset($this->utf8ToGsm[$char])) {
-                    $this->emDebug($char . " not found in utf8 to gsm dicttionary.");
                     throw new \InvalidArgumentException(
                         'Replacement string must contain only GSM 03.38 compatible chars.'
                     );
@@ -591,15 +590,10 @@ return $matches;
 
         foreach ($chars as $char) {
             if (isset($dictionary[$char])) {
-
                 $result .= $dictionary[$char];
-                $this->emDebug($char . " updated to ". $result);
             } elseif ($replaceChars !== null) {
                 $result .= $replaceChars;
             } else {
-                $this->emDebug($char . " not found in utf8 to gsm dicttionary.");
-                $this->emDebug('UTF-8 character ' . strtoupper(bin2hex($char)) . ' cannot be converted, ' .
-                    'and no replacement string has been provided.');
                 throw new \InvalidArgumentException(
                     'UTF-8 character ' . strtoupper(bin2hex($char)) . ' cannot be converted, ' .
                     'and no replacement string has been provided.'

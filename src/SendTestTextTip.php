@@ -42,10 +42,9 @@ if (!empty($_POST['action'])) {
 
 
                     //$day_text = $converter->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
-                    $day_text = $module->convertUtf8ToGsm(current($day_text), true, null); // Hello
+                    $day_text = $module->convertUtf8ToGsm(current($day_text), true, '?'); // Hello
                     $module->emDebug($day_text);
-                    exit;
-                }
+                    }
                 if ('gsm_cleanup' == $encoding) {
                     //$day_text = $module->convertToGSM(current($day_text));
                     //$day_text = $converter->cleanUpUtf8String(current($day_text), false, '?'); // Hell?
@@ -58,21 +57,6 @@ if (!empty($_POST['action'])) {
                     //$day_text = $converter->cleanUpUtf8String(current($day_text), true, '?'); // Hello
                     $day_text = $module->cleanUpUtf8String(current($day_text), true, '?'); // Hello
                     $module->emDebug($day_text);
-
-                }
-                if ('gsm0338_test' == $encoding) {
-
-                    $day_text = $module->checkGSM(current($day_text));
-                    $module->emDebug($day_text);
-
-                }
-                if ('gsm_tbt' == $encoding) {
-
-                    //$day_text = $module->convertTBT(current($day_text));
-
-                    $day_text = "Let's test \u00f6\u00e4\u00fc \u00e9\u00e0\u00e8 \u05d0\u05d9\u05df \u05ea\u05de\u05d9\u05db\u05d4 \u05d1\u05e2\u05d1\u05e8\u05d9\u05ea";
-                    $module->emDebug("SENDING: ". $day_text);
-
 
                 }
             }
@@ -152,12 +136,10 @@ if (!empty($_POST['action'])) {
         </div>
         <select class="form-control" id="encoding">
             <option value="none">No substitution</option>
-            <option value="gsm_tbt">Convert to GSM TBT list</option>
             <option value="gsm">Convert to GSM encoding (without transliteration)</option>
             <option value="gsm0338">Convert to GSM 03.38 encoding (with transliteration)</option>
             <option value="gsm_cleanup">Convert to GSM encoding with CLEANUP (without transliteration)</option>
             <option value="gsm0338_cleanup">Convert to GSM 03.38 encoding with CLEANUP (with transliteration)</option>
-            <option value="gsm0338_test">Check to see if all characters are GSM</option>
         </select>
     </div>
 
