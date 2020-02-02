@@ -79,7 +79,8 @@ class TipsByText extends \ExternalModules\AbstractExternalModule {
         //get the noAuth api endpoint for Cron job.
         $url = $this->getUrl('src/TipsByTextCron.php', true, true);
 
-        while ($proj = db_fetch_assoc($enabled)) {
+        //while ($proj = db_fetch_assoc($enabled)) {
+        while($proj = $enabled->fetch_assoc()){
             $pid = $proj['project_id'];
 
             //check scheduled hour of send
@@ -373,6 +374,48 @@ $str = 'EL DR. DICE: Mientras baña a su hijo, hágale preguntas sobre las parte
 return $matches;
     }
 
+    function checkGSM($str) {
+        if (empty($this->utf8ToGsm)) {
+            $this->loadCharSet();
+        }
+
+        $this->emDebug($str);
+        try {
+            $checkUtf8 = $this->splitUtf8String($str);
+            $this->emDebug($checkUtf8);
+
+            $dictionary = Charset::GSM_TO_UTF8;
+            $utf_dict = $this->utf8ToGsm;
+
+            foreach ($checkUtf8 as $char) {
+                if (! isset($dictionary[$char])) {
+                    $err = 'This char ' . $char . ' is not valid GSM 03.38: ' .$char .
+                        ' char ' . strtoupper(bin2hex($char)) . ' is unknown.';
+                    $this->emDebug($err);
+
+                    if (isset($tbt_dictionary[$char])) {
+                        $msg = "found in tbt dictionary. Using this GSM char: " .
+                            $dictionary[$tbt_dictionary[$char]];
+                        $this->emDebug($msg);
+                    }
+
+                    if (isset($utf_dict[$char]) ) {
+                        $msg = "found in flipped dictionary. Using this GSM char: " .
+                            $dictionary[$utf_dict[$char]];
+                        $this->emDebug("FLIPPED: ".$msg);
+                    }
+
+
+                } else {
+                    $this->emDebug($char . ' is GSM');
+                }
+            }
+        } catch (Exception $e){
+            $this->emDebug(e);
+        }
+
+    }
+
     /*******************************************************************************************************************/
     /* TEXT CONVERSION METHODS      while pre 7.1                                                                      */
     /***************************************************************************************************************** */
@@ -473,6 +516,29 @@ return $matches;
         return $result;
     }
 
+
+    public function convertTBT($string) {
+        $dictionary = Charset::TBT_TO_GSM;
+        $this->emDebug($dictionary);
+        $chars = $this->splitUtf8String($string);
+
+        foreach ($chars as $char) {
+            if (isset($dictionary[$char])) {
+
+                $result .= $dictionary[$char];
+                //$this->emDebug($char . " updated to ". $result);
+            } elseif ($replaceChars !== null) {
+                $result .= $replaceChars;
+            } else {
+                //$this->emDebug($char . " not found in utf8 to gsm dicttionary use as is.");
+                $result .= $char;
+            }
+        }
+
+        //$result = $this->convertGsmToUtf8($result);
+        return $result;
+
+    }
     /**
      * Converts a UTF-8 string to GSM 03.38.
      *
@@ -494,12 +560,13 @@ return $matches;
      */
     public function convertUtf8ToGsm(string $string, bool $translit, string $replaceChars = null) : string
     {
-        global $module;
+
         if (empty($this->utf8ToGsm)) {
             $this->loadCharSet();
         }
 
         $dictionary = $translit ? $this->utf8ToGsmWithTranslit : $this->utf8ToGsm;
+        $this->emDebug($dictionary, $replaceChars);
 
         // Convert the replacement string to GSM 03.38
         if ($replaceChars !== null) {
@@ -508,6 +575,7 @@ return $matches;
 
             foreach ($chars as $char) {
                 if (! isset($this->utf8ToGsm[$char])) {
+                    $this->emDebug($char . " not found in utf8 to gsm dicttionary.");
                     throw new \InvalidArgumentException(
                         'Replacement string must contain only GSM 03.38 compatible chars.'
                     );
@@ -523,10 +591,15 @@ return $matches;
 
         foreach ($chars as $char) {
             if (isset($dictionary[$char])) {
+
                 $result .= $dictionary[$char];
+                $this->emDebug($char . " updated to ". $result);
             } elseif ($replaceChars !== null) {
                 $result .= $replaceChars;
             } else {
+                $this->emDebug($char . " not found in utf8 to gsm dicttionary.");
+                $this->emDebug('UTF-8 character ' . strtoupper(bin2hex($char)) . ' cannot be converted, ' .
+                    'and no replacement string has been provided.');
                 throw new \InvalidArgumentException(
                     'UTF-8 character ' . strtoupper(bin2hex($char)) . ' cannot be converted, ' .
                     'and no replacement string has been provided.'

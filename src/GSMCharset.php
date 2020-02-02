@@ -7,6 +7,34 @@ namespace Stanford\TipsByText;
  */
 class Charset
 {
+
+    const TBT_TO_GSM = [
+        '¿' => "\x60",
+        'à' => "\x7F",
+        'è' => "\x04",
+        'é' => "\x05",
+        'ù' => "\x06",
+        'ì' => "\x07",
+        'ò' => "\x08",
+        'É' => "\x1F",
+        'Ñ' => "\x5D",
+        'ñ' => "\x7D"
+        ];
+
+    const foo = [
+        '@' => "\x00",
+
+
+        '£' => "\x01", '$' => "\x02", '¥' => "\x03", 'Ç' => "\x09", 'Ø' => "\x0B", 'ø' => "\x0C", 'Å' => "\x0E", 'å' => "\x0F",
+			'Δ' => "\x10", '_' => "\x11", 'Φ' => "\x12", 'Γ' => "\x13", 'Λ' => "\x14", 'Ω' => "\x15", 'Π' => "\x16", 'Ψ' => "\x17", 'Σ' => "\x18", 'Θ' => "\x19", 'Ξ' => "\x1A", 'Æ' => "\x1C", 'æ' => "\x1D", 'ß' => "\x1E",
+			// all \x2? removed
+			// all \x3? removed
+			// all \x4? removed
+			'Ä' => "\x5B", 'Ö' => "\x5C", 'Ü' => "\x5E", '§' => "\x5F",
+        '¿' => "\x60",
+			'ä' => "\x7B", 'ö' => "\x7C",  'ü' => "\x7E",
+			'^' => "\x1B\x14", '{' => "\x1B\x28", '}' => "\x1B\x29", '\\' => "\x1B\x2F", '[' => "\x1B\x3C", '~' => "\x1B\x3D", ']' => "\x1B\x3E", '|' => "\x1B\x40", '€' => "\x1B\x65"
+    ];
     /**
      * Maps the GSM 03.38 default alphabet and extension table to UTF-8.
      *
@@ -243,4 +271,6 @@ class Charset
         "\u{00FE}" => "th",       // LATIN SMALL LETTER THORN
         "\u{00FF}" => "\u{0079}", // LATIN SMALL LETTER Y WITH DIAERESIS => LATIN SMALL LETTER Y
     ];
+
+
 }
